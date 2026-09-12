@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Параллелограмм и его свойства — зачёт</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFBF6;
+  --grid:#D9E4EE;
+  --ink:#1B2A41;
+  --ink-soft:#5B6B80;
+  --pen:#C3352B;
+  --edge:#C9D3DE;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background-color:#EEF2F6;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:24px 24px;
+  color:var(--ink);
+  font-family:"PT Serif",Georgia,serif;
+  font-size:18px;line-height:1.55;
+  -webkit-text-size-adjust:100%;
+}
+.sheet{
+  max-width:720px;margin:0 auto;background:var(--paper);
+  border-left:1px solid var(--edge);border-right:1px solid var(--edge);
+  min-height:100vh;padding:0 34px 80px;
+}
+h1,h2,h3,.ui{font-family:"PT Sans",Arial,sans-serif}
+h1{font-size:32px;line-height:1.15;font-weight:700;margin:22px 0 6px;letter-spacing:-.01em}
+h2{font-size:21px;margin:34px 0 10px;font-weight:700}
+p{margin:0 0 12px}
+.lead{color:var(--ink-soft);font-style:italic;margin-bottom:26px}
+
+/* шапка */
+.bar{
+  position:sticky;top:0;z-index:20;display:none;align-items:baseline;gap:14px;
+  margin:0 -34px 0;padding:12px 34px 10px;background:var(--paper);
+}
+.bar.on{display:flex}
+.clock{font-family:"PT Sans",Arial,sans-serif;font-weight:700;font-size:34px;
+  font-variant-numeric:tabular-nums;line-height:1}
+.clock.low{color:var(--pen)}
+.step{font-family:"PT Sans",Arial,sans-serif;font-size:14px;color:var(--ink-soft);margin-left:auto}
+.track{display:none;height:4px;background:var(--grid);margin:0 -34px 28px;position:sticky;top:56px;z-index:20}
+.track.on{display:block}
+.track i{display:block;height:4px;background:var(--ink);width:100%}
+.track i.low{background:var(--pen)}
+
+/* чертёж */
+.draw{display:block;margin:6px 0 4px}
+.draw path,.draw line{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.draw .thin{stroke:var(--ink-soft);stroke-width:1.2;stroke-dasharray:4 4}
+.draw text{font-family:"PT Serif",serif;font-style:italic;font-size:17px;fill:var(--ink)}
+@media (prefers-reduced-motion:no-preference){
+  .draw .animate{stroke-dasharray:620;stroke-dashoffset:620;animation:ink 1.6s ease-out forwards}
+  @keyframes ink{to{stroke-dashoffset:0}}
+}
+
+/* поля */
+label.field{display:block;font-family:"PT Sans",Arial,sans-serif;font-size:15px;color:var(--ink-soft);margin-bottom:6px}
+input[type=text],textarea{
+  width:100%;font-family:"PT Serif",Georgia,serif;font-size:17px;color:var(--ink);
+  background:transparent;border:none;border-bottom:2px solid var(--edge);padding:8px 2px;border-radius:0;
+}
+textarea{
+  border:1px solid var(--edge);padding:12px;line-height:1.7;resize:vertical;min-height:150px;
+  background-image:linear-gradient(transparent 28px, var(--grid) 29px);background-size:100% 29px;
+}
+input:focus,textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(27,42,65,.10)}
+button{
+  font-family:"PT Sans",Arial,sans-serif;font-size:17px;font-weight:700;
+  background:var(--ink);color:var(--paper);border:none;padding:13px 26px;cursor:pointer;
+}
+button:hover{background:#25384f}
+button.quiet{background:transparent;color:var(--ink);border:2px solid var(--ink);padding:11px 24px}
+button:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+
+/* вопрос */
+.qn{font-family:"PT Sans",Arial,sans-serif;font-weight:700;font-size:14px;color:var(--pen);margin-bottom:6px}
+.qtext{font-size:21px;line-height:1.4;margin-bottom:18px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer}
+.opt input{margin-top:7px;accent-color:var(--ink);width:18px;height:18px;flex:none}
+.opt span{flex:1}
+.hint{font-family:"PT Sans",Arial,sans-serif;font-size:13px;color:var(--ink-soft);margin-top:10px}
+.notice{background:#FFF6F2;border:1px solid #E9C4BB;padding:14px 16px;margin:18px 0;font-size:16px}
+.notice b{font-family:"PT Sans",Arial,sans-serif}
+.hidden{display:none!important}
+.teacher{
+  font-family:"PT Sans",Arial,sans-serif;font-size:13px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-soft);text-align:right;
+  padding:14px 0 12px;border-bottom:1px solid var(--grid);margin:0 0 6px;
+}
+.center{text-align:center}
+#fallback textarea{min-height:220px;font-size:14px;background-image:none}
+.foot{font-family:"PT Sans",Arial,sans-serif;font-size:13px;color:var(--ink-soft);margin-top:40px}
+@media(max-width:600px){
+  .sheet{padding:0 18px 60px}
+  .bar{margin:0 -18px;padding:12px 18px 10px}
+  .track{margin:0 -18px 22px}
+  h1{font-size:26px}
+  .qtext{font-size:19px}
+  body{font-size:17px}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="teacher">Преподаватель Веренич Павел</div>
+
+  <div class="bar" id="bar">
+    <div class="clock" id="clock">0:20</div>
+    <div class="step" id="step"></div>
+    <div class="step" id="codeTag" style="margin-left:14px"></div>
+  </div>
+  <div class="track" id="track"><i id="trackFill"></i></div>
+
+<!-- ЭКРАН 1 -->
+<section id="screen-start">
+  <svg class="draw" viewBox="0 0 320 150" width="290" height="136" aria-label="Параллелограмм ABCD с диагоналями">
+    <path class="animate" d="M60 118 L110 32 L268 32 L218 118 Z"/>
+    <line class="thin" x1="60" y1="118" x2="268" y2="32"/>
+    <line class="thin" x1="110" y1="32" x2="218" y2="118"/>
+    <text x="44" y="134">A</text><text x="104" y="24">B</text>
+    <text x="272" y="24">C</text><text x="222" y="134">D</text>
+    <text x="160" y="70" font-size="14">O</text>
+  </svg>
+
+  <h1>Параллелограмм и его свойства</h1>
+  <p class="lead">Работа по § 2. Учебник и тетрадь убери — отвечать нужно по памяти.</p>
+
+  <h2>Приготовь до начала</h2>
+  <div class="notice" style="background:#F4F7F4;border-color:#C3D3C6">
+    <p><b>Ручку и чистый лист.</b> Почти в каждом задании помогает чертёж: нарисуй параллелограмм <i>ABCD</i>, подпиши вершины и отмечай на нём то, что дано — углы, стороны, диагонали, точку пересечения <i>O</i>.</p>
+    <p style="margin:0">Не держи условие в голове: нарисовала, подписала известные величины, посмотрела на чертёж — ответ почти всегда виден сразу. На это и рассчитано время.</p>
+  </div>
+
+  <h2>Как проходит зачёт</h2>
+  <div class="notice">
+    <p><b>Задания идут по одному, у каждого свой таймер.</b> На вопрос с выбором ответа — <span id="secC">20</span> секунд, на развёрнутый — <span id="secO">70</span>.</p>
+    <p>Когда время задания кончается, оно закрывается само и открывается следующее. Вернуться назад и исправить ответ нельзя.</p>
+    <p>Всего <span id="qTotal">13</span> заданий. Копирование и вставка отключены, уходы со страницы записываются.</p>
+    <p><b>Проходить нужно с первого раза.</b> Каждый запуск получает свой код и отмечается у учителя отдельным письмом. Если закрыть страницу и начать заново, это будет видно — засчитана будет первая попытка.</p>
+    <p style="margin:0">Писем будет два: одно сразу при начале работы, второе — с ответами, когда задания закончатся.</p>
+  </div>
+
+  <label class="field" for="student">Фамилия и имя</label>
+  <input type="text" id="student" autocomplete="off" placeholder="Например: Иванова Мария">
+
+  <label class="field" for="clockIn" style="margin-top:22px">Посмотри на часы и впиши время прямо сейчас</label>
+  <input type="text" id="clockIn" autocomplete="off" placeholder="Например: 14:35">
+  <p class="hint" id="nameErr" style="color:var(--pen);display:none">Заполни оба поля — без них работу не принять.</p>
+  <p class="hint">Как только нажмёшь кнопку, учителю уйдёт письмо с этим временем. Второе письмо уйдёт в конце, с ответами.</p>
+  <p class="hint" style="color:var(--pen)">Лист и ручка уже под рукой? Таймер пойдёт сразу после нажатия.</p>
+
+  <p style="margin-top:26px"><button id="startBtn">Начать зачёт</button></p>
+</section>
+
+<!-- ЭКРАН 2 -->
+<section id="screen-test" class="hidden">
+  <div id="qBox"></div>
+  <p style="margin-top:24px"><button id="nextBtn">Дальше</button></p>
+  <p class="hint">Задание закроется само, когда закончится время. Исправить ответ потом нельзя. Рисуй на листе — так быстрее.</p>
+</section>
+
+<!-- ЭКРАН 3 -->
+<section id="screen-done" class="hidden center">
+  <h1 id="doneTitle">Работа отправлена</h1>
+  <p class="lead" id="doneText">Отчёт ушёл учителю. Страницу можно закрыть.</p>
+  <div id="fallback" class="hidden" style="text-align:left">
+    <div class="notice"><p style="margin:0"><b>Письмо не ушло — нет связи с почтовой службой.</b> Скопируй текст ниже и отправь учителю в сообщении.</p></div>
+    <textarea id="fallbackText" readonly></textarea>
+    <p><button id="copyBtn" class="quiet">Скопировать отчёт</button> <button id="mailBtn">Открыть почту</button></p>
+  </div>
+</section>
+
+<p class="foot">Геометрия, 8 класс. § 2 «Параллелограмм и его свойства».</p>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — здесь меняются почта и время на каждое задание
+   ============================================================ */
+const CONFIG = {
+  EMAIL: "pasha_viarenich@mail.ru",  
+  SEC_CLOSED: 30,                // секунд на задание с выбором ответа
+  SEC_OPEN: 70,                  // секунд на развёрнутый ответ
+  BLOCK_COPY: true
+};
+
+const CLOSED = [
+  { q:"Параллелограмм — это четырёхугольник, у которого…",
+    o:["все стороны равны","противоположные стороны попарно параллельны","диагонали равны","все углы прямые"], a:1 },
+  { q:"В параллелограмме ABCD угол BAD равен 70°. Чему равен угол ABC?",
+    o:["70°","90°","110°","130°"], a:2 },
+  { q:"В параллелограмме ABCD угол B равен 120°. Чему равен угол D?",
+    o:["60°","90°","120°","240°"], a:2 },
+  { q:"Диагонали параллелограмма ABCD пересекаются в точке O, AC = 12 см. Чему равен отрезок AO?",
+    o:["3 см","6 см","12 см","24 см"], a:1 },
+  { q:"Периметр параллелограмма равен 36 см, сторона AB = 8 см. Чему равна сторона BC?",
+    o:["8 см","10 см","18 см","28 см"], a:1 },
+  { q:"Высота параллелограмма — это…",
+    o:["отрезок, соединяющий середины противоположных сторон","диагональ, проведённая из тупого угла","перпендикуляр от прямой, содержащей сторону, к прямой, содержащей противоположную сторону","любой отрезок внутри параллелограмма"], a:2 },
+  { q:"Какое утверждение НЕВЕРНО?",
+    o:["Противоположные стороны параллелограмма равны","Диагонали параллелограмма равны","Диагонали параллелограмма точкой пересечения делятся пополам","Сумма углов, прилежащих к одной стороне, равна 180°"], a:1 },
+  { q:"Диагональ BD делит параллелограмм ABCD на треугольники ABD и CDB. Эти треугольники…",
+    o:["равны","подобны, но не равны","равнобедренные","прямоугольные"], a:0 }
+];
+
+const OPEN = [
+  "Сформулируй определение параллелограмма своими словами.",
+  "Перечисли не менее трёх свойств параллелограмма.",
+  "В параллелограмме ABCD угол A равен 65°. Найди остальные три угла и назови свойство, которым пользовалась.",
+  "Периметр параллелограмма равен 48 см, сторона AB на 4 см меньше стороны BC. Найди все стороны. Запиши решение.",
+  "Почему диагональ делит параллелограмм на два равных треугольника? Назови признак равенства треугольников."
+];
+
+/* ============================================================ */
+const $ = id => document.getElementById(id);
+
+const ITEMS = [];
+CLOSED.forEach(c => ITEMS.push({type:"closed", q:c.q, o:c.o, a:c.a, sec:CONFIG.SEC_CLOSED, ans:null, used:0}));
+OPEN.forEach(q  => ITEMS.push({type:"open",   q:q,   sec:CONFIG.SEC_OPEN,  ans:"",   used:0}));
+
+let idx = 0, left = 0, timerId = null, blurs = 0, running = false, startedAt = 0;
+let CODE = "", clockIn = "", startSent = null;
+
+function makeCode(){
+  const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let s = "";
+  for(let i=0;i<4;i++) s += abc[Math.floor(Math.random()*abc.length)];
+  return s;
+}
+
+async function send(subject, fields){
+  try{
+    const res = await fetch("https://formsubmit.co/ajax/" + CONFIG.EMAIL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body: JSON.stringify(Object.assign({ _subject: subject, _template: "table" }, fields))
+    });
+    return res.ok;
+  }catch(e){ return false; }
+}
+
+$("secC").textContent = CONFIG.SEC_CLOSED;
+$("secO").textContent = CONFIG.SEC_OPEN;
+$("qTotal").textContent = ITEMS.length;
+
+function fmt(s){ return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0"); }
+
+$("startBtn").addEventListener("click", ()=>{
+  const name = $("student").value.trim();
+  clockIn = $("clockIn").value.trim();
+  if(name.length < 3 || clockIn.length < 3){ $("nameErr").style.display="block"; return; }
+  $("nameErr").style.display = "none";
+
+  CODE = makeCode();
+  $("codeTag").textContent = "код " + CODE;
+  startedAt = Date.now();
+
+  send("СТАРТ · " + name + " · код " + CODE + " · вписала " + clockIn, {
+    Ученик: name,
+    Код_работы: CODE,
+    Время_по_часам_ученицы: clockIn,
+    Время_устройства: new Date().toLocaleString("ru-RU"),
+    Примечание: "Это первое письмо — работа только начата. Ждите второе письмо с тем же кодом."
+  }).then(ok => { startSent = ok; });
+
+  $("screen-start").classList.add("hidden");
+  $("screen-test").classList.remove("hidden");
+  $("bar").classList.add("on");
+  $("track").classList.add("on");
+  running = true;
+  show(0);
+});
+
+function show(i){
+  idx = i;
+  const it = ITEMS[i];
+  $("step").textContent = "Задание " + (i+1) + " из " + ITEMS.length;
+  $("nextBtn").textContent = (i === ITEMS.length-1) ? "Сдать работу" : "Дальше";
+
+  let html = '<div class="qn">' + (it.type==="closed" ? "Выбери один ответ" : "Развёрнутый ответ") + '</div>' +
+             '<div class="qtext">' + it.q + '</div>';
+  if(it.type === "closed"){
+    it.o.forEach((opt,j)=>{
+      html += '<label class="opt"><input type="radio" name="opt" value="'+j+'"><span>'+opt+'</span></label>';
+    });
+  }else{
+    html += '<textarea id="answer" spellcheck="false" placeholder="Пиши здесь…"></textarea>';
+  }
+  $("qBox").innerHTML = html;
+  if(it.type === "open") $("answer").focus();
+  window.scrollTo(0,0);
+
+  left = it.sec;
+  paint();
+  clearInterval(timerId);
+  timerId = setInterval(()=>{
+    left--; paint();
+    if(left <= 0) advance(true);
+  }, 1000);
+}
+
+function paint(){
+  const it = ITEMS[idx];
+  $("clock").textContent = fmt(Math.max(left,0));
+  const low = left <= Math.max(5, Math.round(it.sec*0.25));
+  $("clock").classList.toggle("low", low);
+  $("trackFill").classList.toggle("low", low);
+  $("trackFill").style.width = (left / it.sec * 100) + "%";
+}
+
+function save(){
+  const it = ITEMS[idx];
+  it.used = it.sec - Math.max(left,0);
+  if(it.type === "closed"){
+    const sel = document.querySelector('input[name=opt]:checked');
+    it.ans = sel ? Number(sel.value) : null;
+  }else{
+    const ta = $("answer");
+    it.ans = ta ? ta.value.trim() : "";
+  }
+}
+
+function advance(byTimer){
+  clearInterval(timerId);
+  save();
+  if(idx < ITEMS.length - 1){ show(idx + 1); }
+  else { finish(); }
+}
+
+$("nextBtn").addEventListener("click", ()=>{ if(running) advance(false); });
+
+/* защита */
+window.addEventListener("blur", ()=>{ if(running) blurs++; });
+document.addEventListener("visibilitychange", ()=>{ if(running && document.hidden) blurs++; });
+if(CONFIG.BLOCK_COPY){
+  ["copy","cut","paste","contextmenu","dragstart"].forEach(e=>{
+    document.addEventListener(e, ev=>{ if(running) ev.preventDefault(); });
+  });
+}
+window.addEventListener("beforeunload", e=>{ if(running){ e.preventDefault(); e.returnValue=""; } });
+
+/* отчёт и отправка */
+function report(){
+  const name = $("student").value.trim() || "без подписи";
+  let score = 0, n = 0;
+  const L = [];
+  L.push("УЧЕНИК: " + name);
+  L.push("КОД РАБОТЫ: " + CODE + "  (должен совпасть с кодом из первого письма)");
+  L.push("Тема: Параллелограмм и его свойства");
+  L.push("Время начала, вписанное ученицей: " + clockIn);
+  L.push("Начало по устройству: " + new Date(startedAt).toLocaleString("ru-RU"));
+  L.push("Конец по устройству:  " + new Date().toLocaleString("ru-RU"));
+  L.push("Первое письмо (старт): " + (startSent === true ? "отправлено" : startSent === false ? "НЕ УШЛО" : "статус неизвестен"));
+  L.push("Всего у экрана: " + fmt(Math.round((Date.now()-startedAt)/1000)));
+  L.push("Уходов со страницы: " + blurs);
+  L.push("");
+  L.push("--- ЧАСТЬ 1. ВЫБОР ОТВЕТА ---");
+  ITEMS.forEach((it,i)=>{
+    if(it.type !== "closed") return;
+    n++;
+    const ok = it.ans === it.a;
+    if(ok) score++;
+    L.push("");
+    L.push((i+1) + ". " + it.q);
+    L.push("   Ответ: " + (it.ans === null ? "— нет ответа" : it.o[it.ans]));
+    L.push("   Верно: " + it.o[it.a]);
+    L.push("   " + (ok ? "ВЕРНО" : "ОШИБКА") + "  ·  потрачено " + it.used + " с из " + it.sec);
+  });
+  L.push("");
+  L.push("ИТОГ ЧАСТИ 1: " + score + " из " + n);
+  L.push("");
+  L.push("--- ЧАСТЬ 2. РАЗВЁРНУТЫЕ ОТВЕТЫ ---");
+  ITEMS.forEach((it,i)=>{
+    if(it.type !== "open") return;
+    L.push("");
+    L.push((i+1) + ". " + it.q);
+    L.push("   [потрачено " + it.used + " с из " + it.sec + "]");
+    L.push(it.ans ? it.ans : "— нет ответа");
+  });
+  return { name, score, total:n, text:L.join("\n") };
+}
+
+async function finish(){
+  running = false;
+  clearInterval(timerId);
+  const r = report();
+  $("screen-test").classList.add("hidden");
+  $("bar").classList.remove("on");
+  $("track").classList.remove("on");
+  $("screen-done").classList.remove("hidden");
+  $("doneTitle").textContent = "Отправляем работу…";
+  $("doneText").textContent = "Задания закончились.";
+  window.scrollTo(0,0);
+
+  const sent = await send(
+    "РАБОТА · " + r.name + " · код " + CODE + " · " + r.score + "/" + r.total + " в части 1",
+    { Ученик: r.name, Код_работы: CODE, Время_по_часам_ученицы: clockIn, Работа: r.text }
+  );
+
+  if(sent){
+    $("doneTitle").textContent = "Работа отправлена";
+    $("doneText").textContent = "Отчёт ушёл учителю, код работы " + CODE + ". Страницу можно закрыть.";
+  }else{
+    $("doneTitle").textContent = "Работа закрыта";
+    $("doneText").textContent = "Отправить письмо не удалось — сделай это вручную.";
+    $("fallback").classList.remove("hidden");
+    $("fallbackText").value = r.text;
+    $("copyBtn").onclick = async ()=>{
+      try{ await navigator.clipboard.writeText(r.text); $("copyBtn").textContent = "Скопировано"; }
+      catch(e){ $("fallbackText").select(); }
+    };
+    $("mailBtn").onclick = ()=>{
+      location.href = "mailto:" + CONFIG.EMAIL +
+        "?subject=" + encodeURIComponent("Зачёт: параллелограмм — " + r.name) +
+        "&body=" + encodeURIComponent(r.text);
+    };
+  }
+}
+</script>
+</body>
+</html>
